@@ -21,7 +21,7 @@
     <div class="max-w-6xl flex flex-col md:flex-row px-2 py-8 mx-auto h-full">
         <section class="md:top-0 md:sticky w-full md:w-1/4 md:pr-2 md:pb-4 flex flex-col self-start flex-wrap">
             <div class="px-3 pt-6">
-                <h1 class="text-center md:text-left text-4xl mb-4">vpkg <span class="text-gray-700">registry</span></h1>
+                <h1 class="text-center md:text-left text-4xl mb-4">model <span class="text-gray-700">registry</span></h1>
                 <p class="text-center md:text-left text-lg max-w-2xl mx-auto mb-4"></p>
     
                 <div class="flex flex-col mb-8">
@@ -112,7 +112,7 @@
                 getPkgScrollTop(e) { 
                     this.pkgScrollTop = document.getElementById("packages").offsetTop; 
                 }, 
-                getPkgCommand(package) { return this.useVpm ? 'v install ' + package.vpm : 'vpkg get ' + package.name; },
+                getPkgCommand(package) { return this.useVpm ? 'main install ' + package.vpm : 'main get ' + package.name; },
                 copy(package) {
                     var txtarea = document.createElement("textarea")
                     this.$el.appendChild(txtarea)
