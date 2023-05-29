@@ -76,12 +76,11 @@
         new Vue({
             el: "#packages",
             mounted() {
-                var server = window.location.origin + window.location.pathname;
                 var vm = this;
-                
+
                 this.getPkgScrollTop();
 
-                axios.get(server + "/registry.json")
+                axios.get("/registry.json") // Use the relative path to the registry.json file
                     .then(function (response) { vm.packages = response.data.packages; vm.isLoading = false; })
                     .catch(function(err) { console.log(err); });
 
@@ -95,7 +94,6 @@
                     var vm = this;
 
                     if (newQuery != oldQuery && scrollTop != 0) {
-                        // console.log(vm.pkgScrollTop);
                         setTimeout(function(){ window.scrollTo(0, vm.pkgScrollTop); }, 300);
                     }
                 }
@@ -103,7 +101,6 @@
             methods: {
                 getPkgScrollTop(e) { 
                     this.pkgScrollTop = document.getElementById("packages").offsetTop; 
-                    // console.log(this.pkgScrollTop);
                 }, 
                 getPkgCommand(package) { return this.useVpm ? 'v install ' + package.vpm : 'vpkg get ' + package.name; },
                 copy(package) {
