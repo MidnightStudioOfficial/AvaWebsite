@@ -72,5 +72,67 @@
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.0"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+        <script>
+        new Vue({
+            el: "#packages",
+            mounted() {
+                var server = window.location.origin + window.location.pathname;
+                var vm = this;
+                
+                this.getPkgScrollTop();
+
+                axios.get(server + "/registry.json")
+                    .then(function (response) { vm.packages = response.data.packages; vm.isLoading = false; })
+                    .catch(function(err) { console.log(err); });
+
+                window.addEventListener("resize", this.getPkgScrollTop);
+            },
+            beforeDestroy() { window.removeEventListener("resize", this.getPkgScrollTop); },
+            data: { pkgScrollTop: 0, packages: [], searchQuery: "", useVpm: false, isLoading: true },
+            watch: {
+                searchQuery: function (oldQuery, newQuery) {
+                    var scrollTop = document.documentElement.scrollTop;
+                    var vm = this;
+
+                    if (newQuery != oldQuery && scrollTop != 0) {
+                        // console.log(vm.pkgScrollTop);
+                        setTimeout(function(){ window.scrollTo(0, vm.pkgScrollTop); }, 300);
+                    }
+                }
+            },
+            methods: {
+                getPkgScrollTop(e) { 
+                    this.pkgScrollTop = document.getElementById("packages").offsetTop; 
+                    // console.log(this.pkgScrollTop);
+                }, 
+                getPkgCommand(package) { return this.useVpm ? 'v install ' + package.vpm : 'vpkg get ' + package.name; },
+                copy(package) {
+                    var txtarea = document.createElement("textarea")
+                    this.$el.appendChild(txtarea)
+                    txtarea.value = this.getPkgCommand(package)
+                    txtarea.select()
+                    document.execCommand("copy")
+                    this.$el.removeChild(txtarea)
+                }
+            },
+            computed: {
+                numberOfPackages() { var len = this.packages.length; return len === 0 ? 0 : len; },
+                filteredPackages() {
+                    var packages = this.packages;
+                    var query = this.searchQuery;
+
+                    if (query.length > 1) { packages = packages.filter(function(pkg) { return pkg.name.indexOf(query) !== -1; }); }
+
+                    return packages.sort(function(a, b) {
+                        var c = a.name.toLowerCase();
+                        var n = b.name.toLowerCase();
+                        if (c < n) { return -1; }
+                        if (c > n) { return 1; }
+                        return 0;
+                    });
+                }
+            }
+        });
+    </script>
 </body>
 </html>
